@@ -49,7 +49,7 @@ def make_environ(event):
         http_hdr_name = 'HTTP_%s' % hdr_name
         environ[http_hdr_name] = hdr_value
 
-    qs = event['queryStringParameters']
+    qs = event.get('queryStringParameters', {})
 
     rc = event.get('requestContext', {})
     identity = rc.get('identity', {})
