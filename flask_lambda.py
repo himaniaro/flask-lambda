@@ -67,9 +67,9 @@ def make_environ(event):
     environ['HOST'] = '%s:%s' % (http_host_hdr, http_x_forwarded_port_hdr)
     environ['SCRIPT_NAME'] = ''
 
-    environ['SERVER_PORT'] = environ.get('HTTP_X_FORWARDED_PORT')
+    environ['SERVER_PORT'] = headers.get('HTTP_X_FORWARDED_PORT')
     environ['SERVER_PROTOCOL'] = 'HTTP/1.1'
-    environ['SERVER_NAME'] = 'lambda'
+    environ['SERVER_NAME'] = http_host_hdr
 
     environ['CONTENT_LENGTH'] = str(
         len(event['body']) if event['body'] else ''
