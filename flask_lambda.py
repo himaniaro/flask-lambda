@@ -38,9 +38,13 @@ __version__ = '0.0.4'
 
 
 def make_environ(event):
-    environ = {}
+    environ = {
+        "CONTENT_TYPE": "application/json"
+    }
 
-    for hdr_name, hdr_value in event['headers'].items():
+    headers = event.get('headers', {})
+
+    for hdr_name, hdr_value in headers.items():
         hdr_name = hdr_name.replace('-', '_').upper()
         if hdr_name in ['CONTENT_TYPE', 'CONTENT_LENGTH']:
             environ[hdr_name] = hdr_value
@@ -54,11 +58,14 @@ def make_environ(event):
     rc = event.get('requestContext', {})
     identity = rc.get('identity', {})
 
+    http_host_hdr = headers.get("Host", "127.0.0.1")
+    http_x_forwarded_port_hdr = headers.get("X-Forwarded-Port", "80")
+
     environ['REQUEST_METHOD'] = event.get('httpMethod', "GET")
     environ['PATH_INFO'] = event.get('path', "/")
     environ['QUERY_STRING'] = urlencode(qs) if qs else ''
     environ['REMOTE_ADDR'] = identity.get('sourceIp', '127.0.0.1')
-    environ['HOST'] = '%(HTTP_HOST)s:%(HTTP_X_FORWARDED_PORT)s' % environ
+    environ['HOST'] = '%s:%s' % (http_host_hdr, http_x_forwarded_port_hdr)
     environ['SCRIPT_NAME'] = ''
 
     environ['SERVER_PORT'] = environ.get('HTTP_X_FORWARDED_PORT')
