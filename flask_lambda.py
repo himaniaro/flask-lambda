@@ -54,7 +54,6 @@ def make_environ(event):
         environ[http_hdr_name] = hdr_value
 
     qs = event.get('queryStringParameters', {})
-
     rc = event.get('requestContext', {})
     identity = rc.get('identity', {})
 
@@ -70,6 +69,7 @@ def make_environ(event):
 
     environ['SERVER_PORT'] = environ.get('HTTP_X_FORWARDED_PORT')
     environ['SERVER_PROTOCOL'] = 'HTTP/1.1'
+    environ['SERVER_NAME'] = 'lambda'
 
     environ['CONTENT_LENGTH'] = str(
         len(event['body']) if event['body'] else ''
