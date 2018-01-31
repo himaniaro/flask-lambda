@@ -116,5 +116,5 @@ class FlaskLambda(Flask):
         return {
             'statusCode': response.status,
             'headers': response.response_headers,
-            'body': body
+            'body': body.decode('utf-8')
         }
